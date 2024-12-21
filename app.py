@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+from openai import OpenAI
 
 
 @st.cache_data()
@@ -18,6 +19,23 @@ def ask_llm(question, model="llama3-8b-8192"):
             }
         ],
         model=model,
+        temperature=0.1,
+    )
+    return chat_completion.choices[0].message.content
+
+@st.cache_data()
+def ask_openai(query):
+    client = OpenAI(
+        api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
+    )
+    chat_completion = client.chat.completions.create(
+    messages=[
+            {
+                "role": "user",
+                "content": query,
+            }
+        ],
+        model="gpt-4o",
     )
     return chat_completion.choices[0].message.content
 
@@ -37,5 +55,8 @@ prompt = st.text_area(
 
 if st.button("Submit"):
     query = prompt.format(question=question, marking=marking, reference=reference)
-    answer = ask_llm(query)
-    st.write(answer)
+    st.header("Groq Says:")
+    st.write(ask_llm(query))
+    st.write("----")
+    st.header("OpenAI Says:")
+    st.write(ask_openai(query))

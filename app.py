@@ -3,7 +3,7 @@ import os
 
 
 @st.cache_data()
-def ask_llm(question, model="llama3-8b-8192"):
+def ask_llm(question, model="llama-3.1-70b-versatile"):
     from groq import Groq
 
     client = Groq(
@@ -18,21 +18,26 @@ def ask_llm(question, model="llama3-8b-8192"):
             }
         ],
         model=model,
+        temperature=0.1,
     )
     return chat_completion.choices[0].message.content
 
 
 st.title("Hello World")
 st.write("AI Examiner")
-question = st.text_area("Input the question:")
-reference = st.text_area("Input the reference Answer:")
-marking = st.text_area("Input the Marking Answer:")
+question = st.text_area("Input the question:",value="What is the purpose of feature scaling in machine learning, and which common methods are used to perform it?")
+reference = st.text_area("Input the reference Answer:",value="Feature scaling is used to standardize the range of independent variables or features of data to ensure that no feature dominates the learning algorithm due to its larger magnitude. Common methods for feature scaling include Normalization (Min-Max Scaling), which scales values to a range of [0, 1], and Standardization (Z-score scaling), which centers the data around the mean with a standard deviation of 1.")
+marking = st.text_area("Input the Marking Answer:",value="Feature scaling adjusts the magnitude of features in the dataset. A commonly used method is Normalization, which scales values between [0, 1].")
 prompt = st.text_area(
     "Prompt:",
     """Check marking answer against reference answer considering question. 
              Question: {question}
              Marking Answer: {marking}
-             Reference Answer: {reference}""",
+             Reference Answer: {reference}
+
+Find the Accuracy, Correctness, Structure, Relevance and Completeness
+Score each and total from 1 to 100
+""",
 )
 
 if st.button("Submit"):

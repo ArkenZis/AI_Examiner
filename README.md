@@ -9,3 +9,8 @@ ToDos:
 - [ ] User form to add question, marking answer, answer to evaluate
 - [ ] Use Langchain to connect to the LLM and query it
 - [ ] Have prompts for the LLM to evaluate
+
+
+
+# Run with
+```pipenv run streamlit run app.py```

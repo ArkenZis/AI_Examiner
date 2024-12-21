@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-from openai import OpenAI
+from openai import AzureOpenAI
 
 
 @st.cache_data()
@@ -25,9 +25,11 @@ def ask_llm(question, model="llama-3.1-70b-versatile"):
 
 @st.cache_data()
 def ask_openai(query):
-    client = OpenAI(
-        api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
+    client = AzureOpenAI(
+        api_version="2024-08-01-preview",
+        azure_endpoint=os.environ.get("OPENAI_API_BASE"),
     )
+
     chat_completion = client.chat.completions.create(
     messages=[
             {
@@ -40,8 +42,7 @@ def ask_openai(query):
     return chat_completion.choices[0].message.content
 
 
-st.title("Hello World")
-st.write("AI Examiner")
+st.title("AI Examiner")
 question = st.text_area("Input the question:",value="What is the purpose of feature scaling in machine learning, and which common methods are used to perform it?")
 reference = st.text_area("Input the reference Answer:",value="Feature scaling is used to standardize the range of independent variables or features of data to ensure that no feature dominates the learning algorithm due to its larger magnitude. Common methods for feature scaling include Normalization (Min-Max Scaling), which scales values to a range of [0, 1], and Standardization (Z-score scaling), which centers the data around the mean with a standard deviation of 1.")
 marking = st.text_area("Input the Marking Answer:",value="Feature scaling adjusts the magnitude of features in the dataset. A commonly used method is Normalization, which scales values between [0, 1].")
